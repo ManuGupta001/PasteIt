@@ -1,10 +1,10 @@
 package io.github.nickdex.pasteit;
 
 /**
- * Created by nick on 8/10/16.
+ * Model class to represent a single ClipItem
  */
 
-public class ClipItem {
+class ClipItem {
     private String text;
     private String deviceName;
     private String deviceType;
@@ -13,9 +13,10 @@ public class ClipItem {
     public ClipItem() {
     }
 
-    public ClipItem(String text, String deviceName) {
+    ClipItem(String text, String deviceName, String deviceType) {
         this.text = text;
         this.deviceName = deviceName;
+        this.deviceType = deviceType;
     }
 
     public String getText() {
@@ -26,7 +27,7 @@ public class ClipItem {
         this.text = text;
     }
 
-    public String getDeviceName() {
+    String getDeviceName() {
         return deviceName;
     }
 

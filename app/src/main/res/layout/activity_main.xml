@@ -31,7 +31,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:hint="@string/editText_input_hint" />
 
         <ImageButton
             android:id="@+id/sendButton"
@@ -39,13 +40,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/imageView_device_description"
             android:enabled="false"
             android:src="@drawable/ic_send" />
 
     </LinearLayout>
 
     <ProgressBar
-        android:id="@+id/progress_bar"
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
