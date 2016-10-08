@@ -7,7 +7,7 @@ package io.github.nickdex.pasteit;
 public class ClipItem {
     private String text;
     private String deviceName;
-    // private String devicePhotoUrl;
+    private String deviceType;
 
 
     public ClipItem() {
@@ -33,4 +33,13 @@ public class ClipItem {
     public void setDeviceName(String deviceName) {
         this.deviceName = deviceName;
     }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
+    }
 }
+
