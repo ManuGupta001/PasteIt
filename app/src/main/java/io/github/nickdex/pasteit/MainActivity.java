@@ -39,14 +39,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public static final String ANONYMOUS = "anonymous";
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_INVITE = 1;
-    //TODO replace local dummy with Firebase Dummy Data
-    static ArrayList<ClipItem> clipItems = new ArrayList<>();
-
-    static {
-        for (int i = 1; i <= 5; i++) {
-            clipItems.add(new ClipItem("Blah" + i, "Nexus", "phone"));
-        }
-    }
 
     private final String PHONE = getString(R.string.phone_device_type);
     private final String CHROME = getString(R.string.chrome_device_type);
