@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
  */
 
 @RunWith(AndroidJUnit4.class)
-public class MainActivityEspressoTest {
+public class MainActivityTest {
     @Rule
     public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
 

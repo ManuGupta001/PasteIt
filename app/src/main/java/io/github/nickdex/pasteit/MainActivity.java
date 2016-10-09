@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,12 +19,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.api.model.StringList;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -31,7 +36,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
 
     public static final String CLIP_ITEMS_CHILD = "clip_items";
-    //TODO Add Google Sign In
     public static final String ANONYMOUS = "anonymous";
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_INVITE = 1;
@@ -44,17 +48,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         }
     }
 
+    private final String PHONE = getString(R.string.phone_device_type);
+    private final String CHROME = getString(R.string.chrome_device_type);
     GoogleApiClient googleApiClient;
+
     private String username;
+
     // View Variables
     private ImageButton sendButton;
     private RecyclerView clipItemRecyclerView;
     private LinearLayoutManager linearLayoutManager;
     private ProgressBar progressBar;
     private EditText itemEditText;
-    // Firebase Instance Variable
+
+    // Firebase Instance Variables
     private FirebaseAuth firebaseAuth;
     private FirebaseUser firebaseUser;
+    private DatabaseReference firebaseDatabaseReference;
+    private FirebaseRecyclerAdapter<ClipItem, ItemViewHolder> firebaseRecyclerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         username = ANONYMOUS;
 
+        // Firebase Authentication
         firebaseAuth = FirebaseAuth.getInstance();
         firebaseUser = firebaseAuth.getCurrentUser();
         if (firebaseUser == null) {
@@ -73,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             username = firebaseUser.getDisplayName();
         }
 
+        // Google Api Client
         googleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API)
@@ -83,33 +96,82 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         clipItemRecyclerView = (RecyclerView) findViewById(R.id.itemRecycleView);
         linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setStackFromEnd(true);
-        clipItemRecyclerView.setLayoutManager(linearLayoutManager);
 
         itemEditText = (EditText) findViewById(R.id.itemEditText);
         sendButton = (ImageButton) findViewById(R.id.sendButton);
 
-        //DummyContent
-        RecyclerView.Adapter<ItemViewHolder> adapter = new RecyclerView.Adapter<ItemViewHolder>() {
+        // Firebase Database
+        firebaseDatabaseReference = FirebaseDatabase.getInstance().getReference();
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<ClipItem, ItemViewHolder>(
+                ClipItem.class,
+                R.layout.item_clip,
+                ItemViewHolder.class,
+                firebaseDatabaseReference.child(CLIP_ITEMS_CHILD)) {
             @Override
-            public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-                return new ItemViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.item_clip, parent, false));
-            }
+            protected void populateViewHolder(ItemViewHolder viewHolder, ClipItem model, int position) {
+                progressBar.setVisibility(ProgressBar.INVISIBLE);
+                viewHolder.itemTextView.setText(model.getText());
+                viewHolder.deviceTextView.setText(model.getDeviceName());
+                //TODO Add drawable resource for chrome
+                /*
+                if(getString(R.string.phone_device_type).equals(model.getDeviceType()))
 
-            @Override
-            public void onBindViewHolder(ItemViewHolder holder, int position) {
-                ClipItem item = clipItems.get(position);
-                holder.itemTextView.setText(item.getText());
-                holder.deviceTextView.setText(item.getDeviceName());
-                holder.deviceImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.smartphone));
-            }
-
-            @Override
-            public int getItemCount() {
-                return clipItems.size();
+                    switch (model.getDeviceType()) {
+                        case PHONE:
+                            viewHolder.deviceImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.smartphone));
+                            break;
+                        case CHROME:
+                            viewHolder.deviceImageView.setImageDrawable(ContextCompat.getDrawable(MainActivity.this, R.drawable.chrome));
+                    }
+                 */
             }
         };
 
-        clipItemRecyclerView.setAdapter(adapter);
+        firebaseRecyclerAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                super.onItemRangeInserted(positionStart, itemCount);
+                int clipItemCount = firebaseRecyclerAdapter.getItemCount();
+                int lastVisiblePosition = linearLayoutManager.findLastCompletelyVisibleItemPosition();
+
+                if (lastVisiblePosition == -1 || (positionStart >= (clipItemCount - 1) && lastVisiblePosition == (positionStart - 1))) {
+                    clipItemRecyclerView.scrollToPosition(positionStart);
+                }
+            }
+        });
+
+        clipItemRecyclerView.setLayoutManager(linearLayoutManager);
+        clipItemRecyclerView.setAdapter(firebaseRecyclerAdapter);
+
+        itemEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().length() > 0) {
+                    sendButton.setEnabled(true);
+                } else {
+                    sendButton.setEnabled(false);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ClipItem item = new ClipItem(itemEditText.getText().toString(), android.os.Build.MODEL, PHONE /* Change to tablet as required */);
+                firebaseDatabaseReference.child(CLIP_ITEMS_CHILD)
+                        .push().setValue(item);
+                itemEditText.setText("");
+            }
+        });
     }
 
     @Override
