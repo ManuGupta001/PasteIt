@@ -4,6 +4,9 @@
     <string name="editText_input_hint">Paste here</string>
     <string name="imageView_device_description">Phone</string>
 
-    //Temporary
+    // Menu
+    <string name="sign_out_menu">Sign Out</string>
+
+    // Temporary
     <string name="welcome_text">Please Sign in to get started</string>
 </resources>
