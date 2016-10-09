@@ -22,8 +22,10 @@ public class MainActivity extends AppCompatActivity {
     public static final String CLIP_ITEMS_CHILD = "clip_items";
     //TODO Add Google Sign In
     public static final String ANONYMOUS = "anonymous";
-    private static final String TAG = "MainActivity";
+    private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_INVITE = 1;
+
+    //TODO replace local dummy with Firebase Dummy Data
     static ArrayList<ClipItem> clipItems = new ArrayList<>();
 
     static {

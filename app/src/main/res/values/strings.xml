@@ -3,4 +3,7 @@
 
     <string name="editText_input_hint">Paste here</string>
     <string name="imageView_device_description">Phone</string>
+
+    //Temporary
+    <string name="welcome_text">Please Sign in to get started</string>
 </resources>
