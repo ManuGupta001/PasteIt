@@ -40,8 +40,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final int REQUEST_INVITE = 1;
 
-    private final String PHONE = getString(R.string.phone_device_type);
-    private final String CHROME = getString(R.string.chrome_device_type);
     GoogleApiClient googleApiClient;
 
     private String username;
@@ -65,6 +63,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         setContentView(R.layout.activity_main);
 
         username = ANONYMOUS;
+        final String PHONE = getString(R.string.phone_device_type);
+        final String CHROME = getString(R.string.chrome_device_type);
 
         // Firebase Authentication
         firebaseAuth = FirebaseAuth.getInstance();
