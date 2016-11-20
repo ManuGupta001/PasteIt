@@ -36,6 +36,8 @@ captures/
 *.iml
 *.idea/workspace.xml
 *.idea/libraries
+android-paste-it/.idea/libraries/
+android-paste-it/.idea/workspace.xml
 
 # Keystore files
 *.jks
