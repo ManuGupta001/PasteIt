@@ -11,7 +11,11 @@
         "48": "images/iconLauncher.png"
     },
     "background": {
+<<<<<<< HEAD
         "scripts": ["scripts/popup.js"]
+=======
+      "scripts": ["scripts/popup.js"]
+>>>>>>> 879c8579fb9816483f5d57820b8ee971c7c55662
     },
     "manifest_version": 2,
     "name": "PasteIt",

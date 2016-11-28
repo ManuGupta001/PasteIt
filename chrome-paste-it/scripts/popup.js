@@ -29,9 +29,9 @@ var MAX_MSG_LIMIT = 12;
 var ANONYMOUS = 'ANONYMOUS';
 var CHROME = 'CHROME';
 var PHONE = 'PHONE';
-var chromeImgUrl = '/images/chip_browser.png';
-var phoneImgUrl = '/images/chip_phone.png';
-var placeHolderImgUrl = '/images/profile_placeholder.png';
+var chromeImgUrl = './images/chip_browser.png';
+var phoneImgUrl = './images/chip_phone.png';
+var placeHolderImgUrl = './images/profile_placeholder.png';
 
 // Initializes PasteIt.
 function PasteIt() {
@@ -197,10 +197,9 @@ PasteIt.resetMaterialTextfield = function(element) {
 
 // Template for messages.
 PasteIt.MESSAGE_TEMPLATE =
-    '<div class="message-container">' +
-    '<div class="spacing"><div class="pic"></div></div>' +
+    '<div class="message-container"><span class="time"></span>' +
+    '<span class="pic"></span>' +
     '<div class="message"></div>' +
-    '<div class="time"></div>' +
     '</div>';
 
 // A loading image URL.
@@ -226,7 +225,7 @@ PasteIt.prototype.displayMessage = function(key, sender, text, email, timestamp)
     } else {
         picUrl = this.auth.currentUser.photoURL;
     }
-    div.querySelector('.pic').style.backgroundImage = 'url(' + picUrl + ')';
+    div.querySelector('span.pic').style.backgroundImage = 'url(' + picUrl + ')';
 
     div.querySelector('.time').textContent = jQuery.timeago(new Date(timestamp));
 
