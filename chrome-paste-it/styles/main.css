@@ -130,8 +130,8 @@ main, #messages-card {
     margin-left : -51px;
     margin-top  :  13%;
     margin-right: -5px;
-} 
-.message-container:before 
+}
+.message-container:before
 {
     border: 15px solid transparent;
   border-bottom-color: #808E8D;
